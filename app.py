@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 import threading, time
 
 app = Flask(__name__)
@@ -15,18 +15,30 @@ devices = [
 # SocketIO event to emit device updates
 @socketio.on('get_devices')
 def send_devices():
-    emit('devices_response', devices)
+    socketio.emit('devices_response', devices)
 
 
 def emit_frequently():
+    global devices
     cnt = 0
     while True:
         cnt += 1
         print(f"{cnt} : emitting...")
-        devices[0]['latitude']+=0.1
+        devices[0]['latitude']+=0.02
         print(devices[0])
         socketio.emit('devices_response', devices)
         time.sleep(5)
+
+        cnt += 1
+        print(f"{cnt} : emitting...")
+        devices[0]['latitude']-=0.02
+        print(devices[0])
+        socketio.emit('devices_response', devices)
+        time.sleep(5)
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected********************')
 
 
 @app.route('/')
