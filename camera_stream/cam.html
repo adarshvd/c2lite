@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Pop-up</title>
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px; /* Adjust width as needed */
+            height: 200px; /* Adjust height as needed */
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="openCamera()">Open Camera</button>
+
+    <div id="cameraPopup" class="popup">
+        <video id="video" width="100%" height="100%" autoplay></video>
+    </div>
+
+    <script>
+        function openCamera() {
+            // JavaScript code to access camera and display in popup
+        }
+    </script>
+</body>
+
+
+<script>
+    function openCamera() {
+    const popup = document.getElementById('cameraPopup');
+    popup.style.display = 'block';
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            const video = document.getElementById('video');
+            video.srcObject = stream;
+        })
+        .catch(error => {
+            console.error('Error accessing camera:', error);
+        });
+}
+
+</script>
+</html>

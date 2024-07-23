@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Device Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 600px; }
+    </style>
+</head>
+<body>
+    <h1>Devices on Map</h1>
+    <div id="map"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Connect to Flask-SocketIO server
+        var socket = io();
+
+        // Handle incoming device updates
+        socket.on('devices_response', function(devices) {
+            devices.forEach(device => {
+                L.marker([device.latitude, device.longitude])
+                    .bindPopup("<b>" + device.name + "</b><br>Status: " + device.status)
+                    .addTo(map);
+            });
+        });
+
+        // Request initial devices
+        socket.emit('get_devices');
+    </script>
+</body>
+</html>
