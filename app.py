@@ -8,9 +8,10 @@ socketio = SocketIO(app)
 
 # Example data (replace with actual data or simulated data)
 devices = [
-    {'id': 1, 'name': 'Device 1', 'latitude': 51.505, 'longitude': -0.09, 'status': 'Online'},
-    {'id': 2, 'name': 'Device 2', 'latitude': 51.51, 'longitude': -0.1, 'status': 'Offline'}
+    {'id': 1, 'name': 'Device 1', 'latitude': 13.0474, 'longitude': 77.562, 'status': 'Online'},
+    {'id': 2, 'name': 'Device 2', 'latitude': 13.0476, 'longitude': 77.562, 'status': 'Offline'}
 ]
+
 
 # SocketIO event to emit device updates
 @socketio.on('get_devices')
