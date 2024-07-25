@@ -1,41 +1,29 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-import threading, time
+import threading, time, json
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
-socketio = SocketIO(app)
+app.config['SECRET_KEY'] = 'd$ehls'
+socketio = SocketIO(app, async_mode = 'gevent') # async_mode = gevent , threading works, idk what they are - AVD
 
-# Example data (replace with actual data or simulated data)
+
+# TBR with DB
 devices = [
     {'id': 1, 'name': 'Device 1', 'latitude': 13.0474, 'longitude': 77.562, 'status': 'Online'},
     {'id': 2, 'name': 'Device 2', 'latitude': 13.0476, 'longitude': 77.562, 'status': 'Offline'}
 ]
 
+baseview = {"lat":13.0474, "long":77.562, "zoom":16}
 
-# SocketIO event to emit device updates
-@socketio.on('get_devices')
-def send_devices():
-    socketio.emit('devices_response', devices)
 
 
 def emit_frequently():
-    global devices
-    cnt = 0
     while True:
-        cnt += 1
-        print(f"{cnt} : emitting...")
-        devices[0]['latitude']+=0.02
-        print(devices[0])
+        print("thread heartbeat")
+        devices[0]["latitude"] += 0.001
         socketio.emit('devices_response', devices)
-        time.sleep(5)
-
-        cnt += 1
-        print(f"{cnt} : emitting...")
-        devices[0]['latitude']-=0.02
-        print(devices[0])
-        socketio.emit('devices_response', devices)
-        time.sleep(5)
+        time.sleep(2)
 
 @socketio.on('connect')
 def handle_connect():
@@ -44,14 +32,13 @@ def handle_connect():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', data = baseview)
 
 if __name__ == '__main__':
     # start emit data process, this emits to client at regular interval
     emit_thread = threading.Thread(target=emit_frequently)
     emit_thread.daemon = True
     emit_thread.start()
-    
     
     socketio.run(app, debug=True)
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask to JS with Socket.IO</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Flask to JS with Socket.IO Example</h1>
+
+    <script>
+        // Embedding the baseview data in a JS variable
+        const baseview = {{ data|tojson }};
+        console.log(baseview); // Check if the baseview data is correctly embedded
+
+        // Initialize Socket.IO client
+        const socket = io();
+        
+
+        // Handle connection event
+        socket.on('connect', () => {
+            console.log('Connected to the server');
+        });
+
+        socket.on('test', function() {
+            console.log("testing");
+        });
+    </script>
+</body>
+</html>

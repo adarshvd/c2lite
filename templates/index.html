@@ -10,10 +10,12 @@
 <body>
   <h1>Devices on Map</h1>
   <div id="map"></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script> -->
+  <script type="text/javascript" src="static/socket.io.js"></script>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var baseview = {{ data | tojson }};
+    var map = L.map('map').setView([baseview.lat, baseview.long], baseview.zoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
@@ -23,11 +25,12 @@
     let markers = [];
 
     // Connect to Flask-SocketIO server
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    // var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var socket = io();
 
     // Handle incoming device updates
     socket.on('devices_response', function(devices) {
-        console.log("hi")
+        console.log("hi");
       // Clear existing markers from the map (optional for efficiency)
       if (markers.length > 0) {
         markers.forEach(marker => map.removeLayer(marker));
@@ -43,8 +46,6 @@
       });
     });
 
-    // Request initial devices (optional)
-    socket.emit('get_devices');
   </script>
 </body>
 </html>
