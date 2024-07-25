@@ -21,28 +21,45 @@
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // Array to store markers (optional for better performance)
+    // Array to store markers (optional for performance)
     let markers = [];
 
     // Connect to Flask-SocketIO server
-    // var socket = io.connect('http://' + document.domain + ':' + location.port);
     var socket = io();
 
     // Handle incoming device updates
     socket.on('devices_response', function(devices) {
-        console.log("hi");
-      // Clear existing markers from the map (optional for efficiency)
+      console.log("hi");
       if (markers.length > 0) {
         markers.forEach(marker => map.removeLayer(marker));
         markers = [];
       }
 
-      // Add new markers to the map
       devices.forEach(device => {
         const marker = L.marker([device.latitude, device.longitude])
           .bindPopup("<b>" + device.name + "</b><br>Status: " + device.status)
           .addTo(map);
-        markers.push(marker); // Add marker to the array for future removal (optional)
+        markers.push(marker);
+
+        // Add right-click context menu
+        marker.on('contextmenu', function(e) {
+          const contextMenu = L.popup({ closeOnClick: true });
+          contextMenu
+            .setContent(`<button id="optionA">Option A</button><br>
+                         <button id="optionB">Option B</button>`)
+            .setLatLng(e.latlng)
+            .openOn(map);
+
+          // Handle option click events
+          document.getElementById('optionA').onclick = function() {
+            socket.emit('option_selected', { deviceId: device.id, option: 'A' });
+            contextMenu.remove();
+          };
+          document.getElementById('optionB').onclick = function() {
+            socket.emit('option_selected', { deviceId: device.id, option: 'B' });
+            contextMenu.remove();
+          };
+        });
       });
     });
 
