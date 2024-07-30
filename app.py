@@ -1,8 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_socketio import SocketIO
-import threading, time, json
+import threading, time
 
-import openstream
+import utils_streaming
+import config
+import requests
 
 
 app = Flask(__name__)
@@ -15,29 +17,38 @@ devices = [
     {'id': 1, 'name': 'Device 1', 'latitude': 13.0474, 'longitude': 77.562, 'status': 'Online'},
     {'id': 2, 'name': 'Device 2', 'latitude': 13.0476, 'longitude': 77.562, 'status': 'Offline'}
 ]
-baseview = {"lat":13.0474, "long":77.562, "zoom":16}
+baseview = {"latitude":config.BASE_LATITUDE, "longitude":config.BASE_LOGITUDE, "zoom":config.BASE_ZOOM}
+baseview = requests.get('http://127.0.0.1:5005/get_baseview').json()
 
 
 def emit_frequently():
+    cnt = 0
     while True:
-        # print("thread heartbeat")
-        devices[0]["latitude"] += 0.001
-        socketio.emit('devices_response', devices)
+        cnt += 1
+        print(f"{cnt}:thread heartbeat")
+        socketio.emit('update', devices)
         time.sleep(2)
+
 
 @socketio.on('connect')
 def handle_connect():
     print('Client connected********************')
 
+
 @socketio.on('option_selected')
 def handle_options(data):
     print(f"clicked {data['option']} in {data['deviceId']} ")
     if (data['deviceId'],data['option']) == (2,'A'):
-        openstream.cam_popup("rtsp://admin:admin@192.168.1.111:554/snl/live/1/1")
+        print("streaming A 2")
+        utils_streaming.cam_popup("rtsp://admin:admin@192.168.1.111:554/snl/live/1/1")
+
 
 @app.route('/')
 def index():
+    print(baseview)
     return render_template('index.html', data = baseview)
+
+
 
 if __name__ == '__main__':
     # start emit data process, this emits to client at regular interval

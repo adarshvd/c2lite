@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
     var baseview = {{ data | tojson }};
-    var map = L.map('map').setView([baseview.lat, baseview.long], baseview.zoom);
+    var map = L.map('map').setView([baseview.latitude, baseview.longitude], baseview.zoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
@@ -28,7 +28,7 @@
     var socket = io();
 
     // Handle incoming device updates
-    socket.on('devices_response', function(devices) {
+    socket.on('update', function(devices) {
       console.log("hi");
       if (markers.length > 0) {
         markers.forEach(marker => map.removeLayer(marker));

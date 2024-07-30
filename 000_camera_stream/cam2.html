@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RTSP Stream</title>
+</head>
+<body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <script src="https://cdn.jsdelivr.net/npm/jsmpeg@latest/dist/jsmpeg.min.js"></script>
+    <script>
+        const url = "rtsp://admin:admin@192.168.1.111:554/snl/live/1/1"; // Replace with your RTSP URL
+        const player = new jsmpeg.Player(url, { canvas: document.getElementById('video') });
+    </script>
+</body>
+</html>
