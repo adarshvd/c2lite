@@ -42,12 +42,29 @@ def get_baseview():
         baseview["zoom"] = int(get_data("SELECT * FROM csl.config WHERE key = 'BASE_ZOOM'")[0][1])
         return jsonify(baseview), 200
 
+@app.route('/get_devices', methods=['GET'])
+def get_devices():
+    if request.method == 'GET':
+        result = []
+        data = get_data("SELECT * FROM csl.devices")
+        for i in data:
+            device = dict()
+            device["id"] = i[0]
+            device["name"] = i[1]
+            device["latitude"] = i[2]
+            device["longitude"] = i[3]
+            device["status"] = i[4]
+
+            result.append(device)
+        print(result)
+        return jsonify(result), 200
+        
+
 
 
 if __name__ == '__main__':
     app.run(debug=True, port=5005)
-
-
+    
 
 
 

@@ -24,6 +24,26 @@
     // Array to store markers (optional for performance)
     let markers = [];
 
+    // Custom icon for offline status
+    var redIcon = L.icon({
+      iconUrl: '../static/icons/redcam.png',  // replace with the URL of a red icon image
+      iconSize: [40,40],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      shadowSize: [41, 41]
+    });
+
+    // Custom icon for offline status
+    var greenIcon = L.icon({
+      iconUrl: '../static/icons/greencam.png',  // replace with the URL of a red icon image
+      iconSize: [40,40],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      shadowSize: [41, 41]
+    });
+
     // Connect to Flask-SocketIO server
     var socket = io();
 
@@ -35,8 +55,18 @@
         markers = [];
       }
 
+
       devices.forEach(device => {
-        const marker = L.marker([device.latitude, device.longitude])
+
+        var markerOptions = {};
+        if (device.status === "Offline") {
+          markerOptions.icon = redIcon;
+        }
+        else if (device.status === "Online") {
+          markerOptions.icon = greenIcon;
+        }
+
+        const marker = L.marker([device.latitude, device.longitude], markerOptions)
           .bindPopup("<b>" + device.name + "</b><br>Status: " + device.status)
           .addTo(map);
         markers.push(marker);
