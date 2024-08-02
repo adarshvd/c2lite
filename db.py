@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 import psycopg2
 
 
-######################################################################################## DB FUNS
+######################################################################################## DB utility functions
 
 #connect and return CONN
 def connect_to_db():
@@ -26,12 +26,15 @@ def get_data(command):
     return rows
 
 
-########################################################################################
 
-
+######################################################################################## Flask 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'd$ehls'
 
+
+
+# Flask Routes
 
 @app.route('/get_baseview', methods=['GET'])
 def get_baseview():
@@ -41,6 +44,7 @@ def get_baseview():
         baseview["longitude"] = float(get_data("SELECT * FROM csl.config WHERE key = 'BASE_LONGITUDE'")[0][1])
         baseview["zoom"] = int(get_data("SELECT * FROM csl.config WHERE key = 'BASE_ZOOM'")[0][1])
         return jsonify(baseview), 200
+
 
 @app.route('/get_devices', methods=['GET'])
 def get_devices():
@@ -61,7 +65,7 @@ def get_devices():
         
 
 
-
+# driver
 if __name__ == '__main__':
     app.run(debug=True, port=5005)
     
