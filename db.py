@@ -58,10 +58,19 @@ def get_devices():
             device["latitude"] = i[2]
             device["longitude"] = i[3]
             device["status"] = i[4]
+            device["type"]=i[5]
 
             result.append(device)
-        print(result)
+        # print(result)
         return jsonify(result), 200
+    
+@app.route('/get_devices_types', methods=['GET'])
+def get_devices_types():
+    if request.method == 'GET':
+        # result = []
+        data = get_data("SELECT * FROM csl.device_types")
+        print(data)
+        return jsonify(data), 200
         
 
 

@@ -28,7 +28,7 @@ def update_display():
         cnt += 1
         # print(f"{cnt}:updating...")
         devices = requests.get('http://127.0.0.1:5005/get_devices').json()
-        print(devices)
+        # print(devices)
         socketio.emit('update', devices)
         time.sleep(config.REFRESH_RATE)
 
@@ -39,6 +39,21 @@ def update_display():
 @socketio.on('connect')
 def handle_connect():
     print('Client connected********************')
+
+@socketio.on('init')
+def handle_connect():
+    baseview = requests.get('http://127.0.0.1:5005/get_baseview').json()
+    print(baseview)
+    devices_types_raw = requests.get('http://localhost:5005/get_devices_types').json()
+    
+    devices_types = dict()
+    for dev in devices_types_raw:
+        devices_types[dev[0]] = dev[1]
+
+    print(devices_types)
+
+    socketio.emit('initialize', {'baseview':baseview, 'devices_types':devices_types})
+    print('Initializing client********************')
 
 # @socketio.on('option_selected')
 # def handle_options(data):
@@ -53,8 +68,9 @@ def handle_connect():
 
 @app.route('/')
 def index():
-    print(baseview)
-    return render_template('index.html', data = baseview)
+    print("C2 is running...")
+    return 'C2 is running on 5173'
+    # return render_template('index.html', data = baseview)
 
 
 
