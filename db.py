@@ -18,12 +18,27 @@ def connect_to_db():
 
 # get data
 def get_data(command):
-    conn = connect_to_db()
-    cur = conn.cursor() 
-    cur.execute(command)
-    rows = cur.fetchall()
-    conn.close()
-    return rows
+    try:
+        conn = connect_to_db()
+        cur = conn.cursor() 
+        cur.execute(command)
+        rows = cur.fetchall()
+        conn.close()
+        return rows
+    except psycopg2.Error as e:
+        print(f"Error updating device status: {e}")
+
+def put_data(command):
+    print(command)
+    try:
+        conn = connect_to_db()
+        cur = conn.cursor() 
+        cur.execute(command)
+        conn.commit()
+        conn.close()
+    except psycopg2.Error as e:
+        print(f"Error updating device status: {e}")
+
 
 
 

@@ -4,6 +4,7 @@ import threading, time
 from flask_cors import CORS
 
 import utils_streaming
+import utils_handle_options
 import config
 import requests
 
@@ -43,11 +44,12 @@ def handle_connect():
     # Listen for 'feature-right-clicked' event
     @socketio.on('feature-right-clicked')
     def handle_feature_right_click(data):
-        print(f"Client right-clicked on feature: {data['name']} {data['type']}")
+        print(f"Client right-clicked on feature: {data['name']} {data['choice']}")
+        utils_handle_options.handle_right_clicked_feature(data)
 
 
 @socketio.on('init')
-def handle_connect():
+def init():
     baseview = requests.get('http://127.0.0.1:5005/get_baseview').json()
     # print(baseview)
     devices_types_raw = requests.get('http://localhost:5005/get_devices_types').json()
