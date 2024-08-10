@@ -50,4 +50,5 @@ def cam_popup(rtsp_stream_id):
     root.mainloop()
             
 if __name__ == "__main__":
-    cam_popup("rtsp://admin:admin@192.168.1.111:554/snl/live/1/1")
+    # cam_popup("rtsp://admin:admin@192.168.1.111:554/snl/live/1/1")
+    cam_popup("rtsp://admin:admin@192.168.1.126:554/stream1")

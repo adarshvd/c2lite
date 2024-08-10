@@ -69,7 +69,7 @@ def get_devices_types():
     if request.method == 'GET':
         # result = []
         data = get_data("SELECT * FROM csl.device_types")
-        print(data)
+        # print(data)
         return jsonify(data), 200
         
 

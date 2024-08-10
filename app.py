@@ -40,17 +40,23 @@ def update_display():
 def handle_connect():
     print('Client connected********************')
 
+    # Listen for 'feature-right-clicked' event
+    @socketio.on('feature-right-clicked')
+    def handle_feature_right_click(data):
+        print(f"Client right-clicked on feature: {data['name']} {data['type']}")
+
+
 @socketio.on('init')
 def handle_connect():
     baseview = requests.get('http://127.0.0.1:5005/get_baseview').json()
-    print(baseview)
+    # print(baseview)
     devices_types_raw = requests.get('http://localhost:5005/get_devices_types').json()
     
     devices_types = dict()
     for dev in devices_types_raw:
         devices_types[dev[0]] = dev[1]
 
-    print(devices_types)
+    # print(devices_types)
 
     socketio.emit('initialize', {'baseview':baseview, 'devices_types':devices_types})
     print('Initializing client********************')
