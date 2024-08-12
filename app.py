@@ -44,7 +44,7 @@ def handle_connect():
     # Listen for 'feature-right-clicked' event
     @socketio.on('feature-right-clicked')
     def handle_feature_right_click(data):
-        print(f"Client right-clicked on feature: {data['name']} {data['choice']}")
+        print(f"Client clicked on feature: {data['dev_id']} {data['dev_type']}  {data['dev_name']} {data['choice']}")
         utils_handle_options.handle_right_clicked_feature(data)
 
 

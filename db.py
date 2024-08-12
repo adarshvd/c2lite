@@ -68,12 +68,16 @@ def get_devices():
         data = get_data("SELECT * FROM csl.devices")
         for i in data:
             device = dict()
-            device["id"] = i[0]
-            device["name"] = i[1]
-            device["latitude"] = i[2]
-            device["longitude"] = i[3]
-            device["status"] = i[4]
-            device["type"]=i[5]
+            device["dev_id"] = i[0]
+            device["dev_name"] = i[1]
+            device["dev_latitude"] = i[2]
+            device["dev_longitude"] = i[3]
+            device["dev_status"] = i[4]
+            device["dev_type"]=i[5]
+            device["dev_serial"]=i[6]
+            device["dev_ip"]=i[7]
+            device["dev_rtsp"]=i[8]
+
 
             result.append(device)
         # print(result)
