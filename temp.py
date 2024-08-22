@@ -1,25 +1,28 @@
-from onvif import ONVIFCamera
-import zeep
+def sort012(arr):
+    #to store count
+    cnt = {0:0,1:0,2:0}
+    for i in arr:
+        cnt[i] += 1
 
-# Disable strict mode on Zeep's XML parser (useful for some devices)
-zeep.xsd.constants.MAX_LENGTH = 200000000
-zeep.xsd.constants.MAX_NESTED = 200000000
+    #change arr according to count
+    for index in range(len(arr)):
+        if cnt[0]>0:
+            arr[index]=0
+            cnt[0]-=1
+            continue
+        elif cnt[1]>0:
+            arr[index]=1
+            cnt[1]-=1
+            continue
+        elif cnt[2]>0:
+            arr[index]=2
+            cnt[2]-=1
+            continue
+        else:
+            break
 
-# Function to discover ONVIF devices
-def discover_onvif_devices():
-    from onvif import ONVIFService
-    discovery_service = ONVIFService(wsdl='https://www.onvif.org/ver10/device/wsdl/devicemgmt.wsdl')
-    devices = discovery_service.GetDiscoveryMode()
-    return devices
 
-# Discover and print devices
-devices = discover_onvif_devices()
-for device in devices:
-    print(f'Device: {device}')
 
-# Example of connecting to a specific camera (replace with your camera details)
-# camera = ONVIFCamera('192.168.1.100', 80, 'admin', 'password')
-# media_service = camera.create_media_service()
-# profiles = media_service.GetProfiles()
-# for profile in profiles:
-#     print(f'Profile: {profile.name}')
+arr = [0,1,1,1,2,0,2]
+sort012(arr)
+print(arr)

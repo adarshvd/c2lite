@@ -2,14 +2,14 @@ import db
 
 # to handle right click fucntions
 def handle_right_clicked_feature(data):
-    print("things will be handled")
+    # print("things will be handled")
 
     #camera
     if data['dev_type']=="camera":
         if data['choice']=="Status":
             print("status logic")
         elif data['choice']=="Stream":
-            print("implement stream status logic")
+            print("stream logic")
         else:
             print("other camera logics")
 
