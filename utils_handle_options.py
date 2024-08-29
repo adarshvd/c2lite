@@ -1,4 +1,5 @@
 import db
+import utils_streaming
 
 # to handle right click fucntions
 def handle_right_clicked_feature(data):
@@ -8,8 +9,12 @@ def handle_right_clicked_feature(data):
     if data['dev_type']=="camera":
         if data['choice']=="Status":
             print("status logic")
-        elif data['choice']=="Stream":
-            print("stream logic")
+        elif data['choice']=="Stream"and data['dev_status']=="Online":
+            print("stream based on camera rtspid")
+            try:
+                utils_streaming.cam_popup(data['dev_rtsp'])
+            except:
+                print(f"error opening camera {data['dev_id']}")
         else:
             print("other camera logics")
 

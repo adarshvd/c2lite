@@ -1,44 +1,43 @@
-import cv2
-import tkinter as tk
-from PIL import Image, ImageTk
+import sys
+import os
+import re
+import importlib
+import warnings
 
-def show_frame():
-    # Capture frame from video source
-    ret, frame = cap.read()
-    if ret:
-        # Resize the frame while maintaining aspect ratio
-        height, width, _ = frame.shape
-        new_width = 640  # Adjust desired width
-        new_height = int(new_width * height / width)
-        frame = cv2.resize(frame, (new_width, new_height))
 
-        # Convert to PIL Image for Tkinter
-        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img = Image.fromarray(cv2image)
-        imgtk = ImageTk.PhotoImage(image=img)
-        label.imgtk = imgtk  # Keep a reference
-        label.configure(image=imgtk)
-    label.after(10, show_frame)  # Update every 10 ms
+is_pypy = '__pypy__' in sys.builtin_module_names
 
-# Define window size
-width = 640
-height = 480
 
-# Create Tkinter window
-root = tk.Tk()
-root.geometry(f"{width}x{height}")  # Set window size
+warnings.filterwarnings('ignore',
+                        r'.+ distutils\b.+ deprecated',
+                        DeprecationWarning)
 
-# Create label to display video frames
-label = tk.Label(root)
-label.pack()
 
-# Start video capture
-cap = cv2.VideoCapture("rtsp://admin:admin@192.168.1.111:554/snl/live/1/1")
+def warn_distutils_present():
+    if 'distutils' not in sys.modules:
+        return
+    if is_pypy and sys.version_info < (3, 7):
+        # PyPy for 3.6 unconditionally imports distutils, so bypass the warning
+        # https://foss.heptapod.net/pypy/pypy/-/blob/be829135bc0d758997b3566062999ee8b23872b4/lib-python/3/site.py#L250
+        return
+    warnings.warn(
+        "Distutils was imported before Setuptools, but importing Setuptools "
+        "also replaces the `distutils` module in `sys.modules`. This may lead "
+        "to undesirable behaviors or errors. To avoid these issues, avoid "
+        "using distutils directly, ensure that setuptools is installed in the "
+        "traditional way (e.g. not an editable install), and/or make sure "
+        "that setuptools is always imported before distutils.")
 
-# Start the video display loop
-show_frame()
 
-# Handle window close event
-root.protocol("WM_DELETE_WINDOW", lambda: (cap.release(), cv2.destroyAllWindows(), root.destroy()))
+def clear_distutils():
+    if 'distutils' not in sys.modules:
+        return
+    warnings.warn("Setuptools is replacing distutils.")
+    mods = [name for name in sys.modules if re.match(r'distutils\b', name)]
+    for name in mods:
+        del sys.modules[name]
 
-root.mainloop()
+
+def enabled():
+    """
+    Allow select
